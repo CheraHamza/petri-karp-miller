@@ -1,24 +1,81 @@
-import { PetriNet, OMEGA } from "./petri-net.js";
+import { PetriNet } from "./petri-net.js";
+import {
+	karpMiller,
+	printCoverabilityTree,
+	isBounded,
+	quasiLiveTransitions,
+	liveTransitions,
+} from "./karp-miller.js";
+import { loadPetriNetFromJSON } from "./json-loader.js";
+import { readFileSync, readdirSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
-// Testing petriNet class functionality 
-const places = ["p1", "p2"];
-const transitions = ["t1", "t2"];
-const initial = [1, 0];
-const input = { t1: [1, 0], t2: [0, 1] };
-const output = { t1: [0, 1], t2: [1, 0] };
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const net = new PetriNet(places, transitions, initial, input, output);
+function analyzePetriNet(net, netName) {
+	console.log("=".repeat(80));
+	console.log(`${netName}`);
+	console.log("=".repeat(80));
 
-let marking = initial;
-console.log("start", marking);
-console.log("enabled at start", net.getEnabledTransitions(marking));
+	// Build coverability tree
+	const root = karpMiller(net);
 
-marking = net.fireTransition(marking, "t1");
-console.log("after t1", marking);
-console.log("enabled now", net.getEnabledTransitions(marking));
+	// Print tree
+	console.log("\nCoverability Tree:\n");
+	console.log(printCoverabilityTree(root));
 
-marking = net.fireTransition(marking, "t2");
-console.log("after t2", marking);
+	// Analyze properties
+	const bounded = isBounded(root);
+	const quasiLive = quasiLiveTransitions(root, net);
+	const live = liveTransitions(root, net);
 
-const omegaMarking = [OMEGA, 0];
-console.log("ω marking enabled", net.getEnabledTransitions(omegaMarking));
+	console.log("\nAnalysis Results:");
+	console.log("-".repeat(80));
+	console.log(`Bounded: ${bounded ? "YES" : "NO"}`);
+	console.log(
+		`Quasi-live transitions: ${
+			Object.entries(quasiLive)
+				.filter(([t, v]) => v)
+				.map(([t]) => t)
+				.join(", ") || "NONE"
+		}`
+	);
+	console.log(
+		`Not quasi-live: ${
+			Object.entries(quasiLive)
+				.filter(([t, v]) => !v)
+				.map(([t]) => t)
+				.join(", ") || "NONE"
+		}`
+	);
+	console.log(
+		`Live transitions: ${
+			Object.entries(live)
+				.filter(([t, v]) => v)
+				.map(([t]) => t)
+				.join(", ") || "NONE"
+		}`
+	);
+
+	console.log("\n");
+}
+
+// note: path must be an absolute path
+function analyseFromFile(filePath) {
+	const netName = JSON.parse(readFileSync(filePath, "utf-8")).name;
+	const net = loadPetriNetFromJSON(filePath);
+	analyzePetriNet(net, netName);
+}
+
+const examplesDir = join(__dirname, "..", "examples");
+
+// analyse all files
+// const files = readdirSync(examplesDir);
+// for (const file of files) {
+// 	analyseFromFile(join(examplesDir, file));
+// }
+
+// analyse one file
+analyseFromFile(join(examplesDir, "example4-givenexample.json"));
