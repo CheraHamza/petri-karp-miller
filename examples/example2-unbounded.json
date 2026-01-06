@@ -1,0 +1,12 @@
+{
+	"name": "Example 2: Unbounded Net",
+	"places": ["p1", "p2"],
+	"transitions": ["t1"],
+	"initialMarking": [1, 0],
+	"input": {
+		"t1": [1, 0]
+	},
+	"output": {
+		"t1": [1, 1]
+	}
+}

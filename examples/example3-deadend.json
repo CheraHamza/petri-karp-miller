@@ -1,0 +1,14 @@
+{
+	"name": "Example 3: Net with Dead-end State",
+	"places": ["p1", "p2", "p3"],
+	"transitions": ["t1", "t2"],
+	"initialMarking": [1, 0, 0],
+	"input": {
+		"t1": [1, 0, 0],
+		"t2": [0, 1, 1]
+	},
+	"output": {
+		"t1": [0, 1, 0],
+		"t2": [1, 0, 1]
+	}
+}
