@@ -4,8 +4,11 @@ This repository contains an implementation of the Petri Karp-Miller algorithm, a
 
 ## Features
 
-- Implementation of the Karp-Miller algorithm for Petri nets.
-- Visualization of the coverability tree.
+- Karp–Miller coverability tree construction for Petri nets.
+- ω-application to finitely represent potentially infinite state spaces.
+- Text visualization of the coverability tree.
+- Property analysis: boundedness, quasi-liveness, and liveness.
+- **JSON input support** for easy test case creation
 
 ## Languages and Tools
 
@@ -17,15 +20,47 @@ This repository contains an implementation of the Petri Karp-Miller algorithm, a
 - Node.js v22.14.0
 - npm v10.9.2
 
-## Installation
+## Installation & Run
 
 1. Clone the repository
 2. Navigate to the project directory
-3. Install dependencies:
+3. Run the application:
    ```bash
-   npm install
+    node src/index.js          # modify src/index.js to change input file
    ```
-4. Run the application
-   ```bash
-   npm start
-   ```
+
+## JSON Input Format
+
+You can define Petri nets in JSON files with the following structure:
+
+```json
+{
+	"name": "Example Name",
+	"places": ["p1", "p2", "p3"],
+	"transitions": ["t1", "t2"],
+	"initialMarking": [1, 0, 0],
+	"input": {
+		"t1": [1, 0, 0],
+		"t2": [0, 1, 1]
+	},
+	"output": {
+		"t1": [0, 1, 0],
+		"t2": [1, 0, 1]
+	}
+}
+```
+
+The `input` and `output` objects map transition names to arrays representing tokens consumed/produced at each place.
+
+## Example Test Cases
+
+The `examples/` directory contains 3 simple test cases demonstrating different Petri net properties:
+
+1. **example1-bounded.json** - Simple cyclic bounded net
+2. **example2-unbounded.json** - Unbounded producer (ω in coverability tree)
+3. **example3-deadend.json** - Net with dead-end states
+
+### Notes
+
+- ω is represented with `Infinity` and printed as `ω`.
+
