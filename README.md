@@ -54,7 +54,7 @@ The `input` and `output` objects map transition names to arrays representing tok
 
 ## Example Test Cases
 
-The `examples/` directory contains 3 simple test cases demonstrating different Petri net properties:
+The `examples/` directory contains 4 simple test cases demonstrating different Petri net properties:
 
 1. **example1-bounded.json** - Simple cyclic bounded net
 2. **example2-unbounded.json** - Unbounded producer (ω in coverability tree)
