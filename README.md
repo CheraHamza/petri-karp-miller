@@ -59,8 +59,8 @@ The `examples/` directory contains 3 simple test cases demonstrating different P
 1. **example1-bounded.json** - Simple cyclic bounded net
 2. **example2-unbounded.json** - Unbounded producer (ω in coverability tree)
 3. **example3-deadend.json** - Net with dead-end states
+4. **example4-givenexample.json** - Given example from the project description
 
 ### Notes
 
 - ω is represented with `Infinity` and printed as `ω`.
-
